@@ -7,9 +7,15 @@ use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Project::all();
+        $query = Project::query();
+
+        if ($request->has('completed')){
+            $query->where('is_completed', (int) $request->completed);
+        }
+
+        return $query->get();
     }
 
     public function store(Request $request)
@@ -50,6 +56,17 @@ class ProjectController extends Controller
             'description' => $request->description,
             'is_completed' => $request->is_completed ?? false,
         ]);
+
+        return response()->json($project);
+    }
+
+    public function toggle($id)
+    {
+        $project = Project::findOrFail($id);
+
+        $project->is_complited = !$project->is_completed;
+
+        $project->save();
 
         return response()->json($project);
     }
