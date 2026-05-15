@@ -39,7 +39,11 @@ class ProjectController extends Controller
 
         $query->orderBy($sort, $direction);
 
-        return $query->get();
+        $perPage = $request->get('per_page', 10);
+
+        $perPage = min($perPage, 50);
+
+        return $query->paginate($perPage);
     }
 
     public function store(Request $request)
