@@ -15,6 +15,15 @@ class ProjectController extends Controller
             $query->where('is_completed', (int) $request->completed);
         }
 
+        if ($request->has('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('description', 'LIKE', "%{$search}%" );
+            });
+        }
+
         return $query->get();
     }
 
@@ -64,7 +73,7 @@ class ProjectController extends Controller
     {
         $project = Project::findOrFail($id);
 
-        $project->is_complited = !$project->is_completed;
+        $project->is_completed = !$project->is_completed;
 
         $project->save();
 
