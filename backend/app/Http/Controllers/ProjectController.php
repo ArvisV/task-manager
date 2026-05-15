@@ -24,6 +24,21 @@ class ProjectController extends Controller
             });
         }
 
+        $allowedSort = ['name', 'created_at', 'is_completed'];
+
+        $sort = $request->get('sort', 'created_at');
+
+        $direction = $request->get('direction', 'desc');
+
+        if (!in_array($sort, $allowedSort)) {
+            $sort = 'created_at';
+        }
+        if (!in_array($direction, ['asc', 'desc'])) {
+            $direction = 'desc';
+        }
+
+        $query->orderBy($sort, $direction);
+
         return $query->get();
     }
 
