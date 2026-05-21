@@ -40,6 +40,16 @@ function App() {
     }
   };
 
+  const deleteProject = async (id) => {
+    try {
+      await api.delete(`/projects/${id}`);
+
+      fetchProjects();
+    }catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  }
+
   return (
     <div>
       <h1>Task Manager</h1>
@@ -68,6 +78,10 @@ function App() {
         <div key={project.id}>
           <h3>{project.name}</h3>
           <p>{project.description}</p>
+
+          <button onClick={() => deleteProject(project.id)}>
+            Delete
+          </button>
         </div>
       ))}
     </div>
