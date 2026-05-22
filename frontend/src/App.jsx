@@ -48,44 +48,98 @@ function App() {
     }catch (error) {
       console.error("Error deleting project:", error);
     }
-  }
+  };
+
+  const toggleProject = async (id) => {
+    try {
+      await api.patch(`/projects/${id}/toggle`);
+
+      fetchProjects();
+    } catch (error) {
+      console.error("Error toggling project:", error);
+    }
+  };
+
+  const activeProject = projects.filter(
+    (project) => !project.is_completed
+  );
+
+  const completedProjects = projects.filter(
+    (project) => project.is_completed
+  );
 
   return (
-    <div>
-      <h1>Task Manager</h1>
-      <form onSubmit={createProject}>
-        <div>
-          <input
-            type="text"
-            placeholder="Project name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
+  <div>
+    <h1>Task Manager</h1>
 
-        <div>
-          <textarea
-            placeholder="Project description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
+    <form onSubmit={createProject}>
+      <div>
+        <input
+          type="text"
+          placeholder="Project name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
 
-        <button type="submit">Create Project</button>
-      </form>
+      <div>
+        <textarea
+          placeholder="Project description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+      </div>
 
-      {projects.map((project) => (
-        <div key={project.id}>
-          <h3>{project.name}</h3>
-          <p>{project.description}</p>
+      <button type="submit">Create Project</button>
+    </form>
 
-          <button onClick={() => deleteProject(project.id)}>
-            Delete
-          </button>
-        </div>
-      ))}
-    </div>
-  );
+    <h2>Active Projects</h2>
+
+    {activeProject.map((project) => (
+      <div key={project.id}>
+        <input
+          type="checkbox"
+          checked={project.is_completed}
+          onChange={() => toggleProject(project.id)}
+        />
+
+        <h3>{project.name}</h3>
+
+        <p>{project.description}</p>
+
+        <button onClick={() => deleteProject(project.id)}>
+          Delete
+        </button>
+      </div>
+    ))}
+
+    <h2>Completed Projects</h2>
+
+    {completedProjects.map((project) => (
+      <div
+        key={project.id}
+        style={{
+          opacity: 0.7,
+          textDecoration: "line-through",
+        }}
+      >
+        <input
+          type="checkbox"
+          checked={project.is_completed}
+          onChange={() => toggleProject(project.id)}
+        />
+
+        <h3>{project.name}</h3>
+
+        <p>{project.description}</p>
+
+        <button onClick={() => deleteProject(project.id)}>
+          Delete
+        </button>
+      </div>
+    ))}
+  </div>
+);
 }
 
 export default App;
