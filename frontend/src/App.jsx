@@ -69,7 +69,7 @@ function App() {
   );
 
   return (
-  <div>
+  <div className="container">
     <h1>Task Manager</h1>
 
     <form onSubmit={createProject}>
@@ -96,7 +96,8 @@ function App() {
     <h2>Active Projects</h2>
 
     {activeProject.map((project) => (
-      <div key={project.id}>
+      <div key={project.id} className="project-card">
+        <div className="project-header">
         <input
           type="checkbox"
           checked={project.is_completed}
@@ -104,10 +105,14 @@ function App() {
         />
 
         <h3>{project.name}</h3>
+        </div>
 
         <p>{project.description}</p>
 
-        <button onClick={() => deleteProject(project.id)}>
+        <button
+          className="delete-button"
+          onClick={() => deleteProject(project.id)}
+        >
           Delete
         </button>
       </div>
@@ -116,24 +121,24 @@ function App() {
     <h2>Completed Projects</h2>
 
     {completedProjects.map((project) => (
-      <div
-        key={project.id}
-        style={{
-          opacity: 0.7,
-          textDecoration: "line-through",
-        }}
-      >
+      <div key={project.id} className="project-card completed">
+        <div className="project-header">
         <input
           type="checkbox"
           checked={project.is_completed}
           onChange={() => toggleProject(project.id)}
         />
+        
 
         <h3>{project.name}</h3>
+        </div>
 
         <p>{project.description}</p>
 
-        <button onClick={() => deleteProject(project.id)}>
+        <button 
+          className="delete-button"
+          onClick={() => deleteProject(project.id)}
+        >
           Delete
         </button>
       </div>
