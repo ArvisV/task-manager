@@ -5,14 +5,17 @@ function App() {
   const [projects, setProjects] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetchProjects();
-  }, []);
+  }, [search]);
 
   const fetchProjects = async () => {
     try {
-      const response = await api.get("/projects");
+      const response = await api.get(
+        `/projects?search=${search}`
+      );
 
       console.log(response.data);
 
@@ -71,6 +74,13 @@ function App() {
   return (
   <div className="container">
     <h1>Task Manager</h1>
+
+    <input
+      type="text"
+      placeholder="Search projects..."
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+    />
 
     <form onSubmit={createProject}>
       <div>
