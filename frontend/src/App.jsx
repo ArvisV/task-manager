@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "./services/api";
+import ProjectForm from "./components/ProjectForm";
+import ProjectList from "./components/ProjectList";
 
 function App() {
   const [projects, setProjects] = useState([]);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -25,17 +25,13 @@ function App() {
     }
   };
   
-  const createProject = async (e) => {
-    e.preventDefault();
-
+  const createProject = async (name, description) => {
     try {
       await api.post("/projects", {
         name,
         description,
       });
 
-      setName("");
-      setDescription("");
 
       fetchProjects();
     } catch (error) {
@@ -63,17 +59,10 @@ function App() {
     }
   };
 
-  const activeProject = projects.filter(
-    (project) => !project.is_completed
-  );
-
-  const completedProjects = projects.filter(
-    (project) => project.is_completed
-  );
-
   return (
   <div className="container">
     <h1>Task Manager</h1>
+    <ProjectForm onCreate={createProject}/>
 
     <input
       type="text"
@@ -82,77 +71,11 @@ function App() {
       onChange={(e) => setSearch(e.target.value)}
     />
 
-    <form onSubmit={createProject}>
-      <div>
-        <input
-          type="text"
-          placeholder="Project name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
-
-      <div>
-        <textarea
-          placeholder="Project description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
-
-      <button type="submit">Create Project</button>
-    </form>
-
-    <h2>Active Projects</h2>
-
-    {activeProject.map((project) => (
-      <div key={project.id} className="project-card">
-        <div className="project-header">
-        <input
-          type="checkbox"
-          checked={project.is_completed}
-          onChange={() => toggleProject(project.id)}
-        />
-
-        <h3>{project.name}</h3>
-        </div>
-
-        <p>{project.description}</p>
-
-        <button
-          className="delete-button"
-          onClick={() => deleteProject(project.id)}
-        >
-          Delete
-        </button>
-      </div>
-    ))}
-
-    <h2>Completed Projects</h2>
-
-    {completedProjects.map((project) => (
-      <div key={project.id} className="project-card completed">
-        <div className="project-header">
-        <input
-          type="checkbox"
-          checked={project.is_completed}
-          onChange={() => toggleProject(project.id)}
-        />
-        
-
-        <h3>{project.name}</h3>
-        </div>
-
-        <p>{project.description}</p>
-
-        <button 
-          className="delete-button"
-          onClick={() => deleteProject(project.id)}
-        >
-          Delete
-        </button>
-      </div>
-    ))}
+    <ProjectList
+      projects={projects}
+      onDelete={deleteProject}
+      onToggle={toggleProject}
+      />
   </div>
 );
 }
